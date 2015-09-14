@@ -8,18 +8,35 @@ from PyQt5.Qt import *
 
 
 class Creature:
-    def __init__(self, f, x, y, d, cr_id):
+    def __init__(self, f, stx, sty, exx, exy,d, cr_id):
 
         #Свойства существа
         
         self.fitness=f#суммарная живучесть. Устанавливается при запуске шага симуляции и может увеличиваться во время её
         self.id=cr_id#номер существа. Позлоляет суммировать живучесть от разных копий существа, созданных во время симуляции
-        self.coord=(x, y)#координаты текущего суества во время шага симуляции
+        self.coord=(stx, sty)#координаты текущего суества во время шага симуляции.При инициализации - стартовые значения
+        self.exit=(exx, exy)#координаты выхода
         self.gene=d.copy()#гены. Ключ - координата
 
     def copy(self):
-        return Creature(self.fitness, 0, 0, self.gene.copy(),0)
+        return Creature(self.fitness, self.coord[0], self.coord[1], self.exit[0], self.exit[1], self.gene.copy(),0)
 
+class Trace:#Трассировка движения объекта
+    #x,y - координаты метки на шаге self.met
+    #child - массив, в котором лежат номера дочерних к данному элементов в массиве трассировок существа в Управляющем классе
+    #если существо не делится, child пуст; иначе там указываются номера
+    def __init__(self):
+        self.d=()
+        self.len=0
+        self.met=-1
+
+    def AddElem(x,y, child=()):
+        self.d[self.len]=(x,y,child)
+        self.len+=1
+
+    def TakeElem():
+        self.met+=1
+        return self.d[self.met]
 
 class Monitor:
     def __init__(self, h, w, n1=20, n2=20, bodyItemWidth=30, bodyItemHeight=30):#n1 - кол-во клеток в теле существа в ширину n2  - в длину, bodyItemWidth bodyItemHeight - размеры клеток
@@ -247,40 +264,45 @@ class Action:
         elif ch==3:
             ch='M'
         return ch
+
+    def Random_Number(self, n):#возвращает случайное число в границах от 0 до n
+        num=int(random.random()*(n-0.01))
+        return num
     
-    def Make_Random_Creatures_Pool(self):#Создание пула случайных существ при запуске симуляции
+    def Make_Random_Creatures_Pool(self,startX,startY,exitX,exitY):#Создание пула случайных существ при запуске симуляции
         self.Creature_pool=[]
         num=0
         for k in range(self.number_creatures):
-            #print(str(k))
             d=dict()
+            
             for t  in range(self.start_gene_ln):
                 ch=self.Random_Simbol()
-                d[(int(random.random()*(self.gor+0.99)), int(random.random()*(self.vert+0.99)))]=ch#в словарь добавляем пару, где ключ - список из двух случайных чисел от 0 до 20, а значение - случайная буква
-            self.Creature_pool.append([Creature(self.start_stav_fitness, int(self.gor/2)+1, 0, d,num)])
+                d[self.Random_Number(self.gor), self.Random_Number(self.vert)]=ch#в словарь добавляем пару, где ключ - список из двух случайных чисел от 0 до 20, а значение - случайная буква
+
+            self.Creature_pool.append([Creature(self.start_stav_fitness, startX,startY,exitX,exitY, d,num)])
             num+=1
         return
 
 
     def Make_Offspring(self, creature_p):#создаёт потомка существа
         creature=creature_p.copy()
-        t=int(random.random()*4.99)
+        t=self.Random_Number(5)
         if t==0:#удаление гена
-            d=int(random.random()*len(creature.gene)-0.01)
+            d=self.Random_Number(len(creature.gene))
             del creature.gene[list(creature.gene.keys())[d]]
         elif t==1:#изменение символа в гене
-            d=int(random.random()*len(creature.gene)-0.01)
+            d=self.Random_Number(len(creature.gene))
             creature.gene[list(creature.gene.keys())[d]]=self.Random_Simbol()
         elif t==2:#изменение второй координаты в гене 
-            d=int(random.random()*len(creature.gene)-0.01)
-            creature.gene[(list(creature.gene.keys())[d][0], int(random.random()*self.gor-0.01))]=creature.gene[list(creature.gene.keys())[d]]
+            d=self.Random_Number(len(creature.gene))
+            creature.gene[(list(creature.gene.keys())[d][0], self.Random_Number(self.vert))]=creature.gene[list(creature.gene.keys())[d]]
             del creature.gene[list(creature.gene.keys())[d]]
         elif t==3:#изменение первой координаты в гене
-            d=int(random.random()*len(creature.gene)-0.01)
-            creature.gene[int(random.random()*self.gor-0.01), list(creature.gene.keys())[d][1]]=creature.gene[list(creature.gene.keys())[d]]
+            d=self.Random_Number(len(creature.gene))
+            creature.gene[self.Random_Number(self.gor), list(creature.gene.keys())[d][1]]=creature.gene[list(creature.gene.keys())[d]]
             del creature.gene[list(creature.gene.keys())[d]]
         elif t==4:#добавление символа
-            creature.gene[(int(random.random()*(self.gor+0.99)), int(random.random()*(self.vert+0.99)))]=self.Random_Simbol()
+            creature.gene[self.Random_Number(self.gor), self.Random_Number(self.vert)]=self.Random_Simbol()
         return creature
 
             
@@ -292,57 +314,74 @@ class Action:
         if not(creature.id in self.result):#если существо ещё не учавствовало в симуляции, инициализируем поле 0. (существа с M могут вызываться несколькими функциями и их результаты суммируются)
             #self.result.append(creature.id)
             self.result[creature.id]=0
-        print(str(creature.coord[0])+' '+str(creature.coord[1]))
-        if creature.coord[1]==self.vert:
-            if creature.coord[0]==int(self.gor/2)+1:#условие прибавления очков
-                self.result[creature.id]+=creature.fitness
-                self.Del_Creature(creature)
-            else:
-                self.Del_Creature(creature)
+        
+        if creature.coord[0]==creature.exit[0] and creature.coord[1]==creature.exit[1]:#условие прибавления очков
+            self.result[creature.id]+=creature.fitness
+            print(str(creature.coord[0])+' '+str(creature.coord[1])+'  '+str(self.result[creature.id]))#####Консольный вывод
+            return
+            #self.Del_Creature(creature)
+        if creature.coord[0]!=creature.exit[0] and creature.coord[1]==creature.exit[1]:#выбыло
+            print(str(creature.coord[0])+' '+str(creature.coord[1])+'  '+str(self.result[creature.id]))#####Консольный вывод
+            return
+            #self.Del_Creature(creature)
+        print(str(creature.coord[0])+' '+str(creature.coord[1])+'  '+str(self.result[creature.id]))#####Консольный вывод
         if creature.coord in creature.gene:#если координате существа соответствует какая-либо буква в геноме, то...
             
             if creature.gene[creature.coord]=='L' and creature.coord[0]!=self.gor:
                 creature.coord=(creature.coord[0]+1, creature.coord[1])
                 creature.coord=(creature.coord[0], creature.coord[1]+1)
+                self.Move(creature)
                 return
 
             if creature.gene[creature.coord]=='R' and creature.coord[0]!=0:
                 creature.coord=(creature.coord[0]-1, creature.coord[1])
                 creature.coord=(creature.coord[0], creature.coord[1]+1)
+                self.Move(creature)
                 return
 
             if creature.gene[creature.coord]=='A':
                 creature.fitness+=1
                 creature.coord=(creature.coord[0], creature.coord[1]+1)
+                self.Move(creature)
                 return
 
             if creature.gene[creature.coord]=='M':
                 if creature.coord[0]==self.gor:
-                    self.Creature_pool.append(Creature(creature.fitness, creature.coord[0]-1, creature.coord[1]+1, creature.gene, creature.id))
+                    cr=Creature(creature.fitness, creature.coord[0]-1, creature.coord[1]+1, creature.exit[0], creature.exit[1], creature.gene, creature.id)
+                    self.Creature_pool[creature.id].append(cr)
                     creature.coord=(creature.coord[0], creature.coord[1]+1)
+                    self.Move(creature)
+                    self.Move(cr)
                     return
                 elif creature.coord[0]==0:
-                    self.Creature_pool.append(Creature(creature.fitness, creature.coord[0]+1, creature.coord[1]+1, creature.gene, creature.id))
+                    cr=Creature(creature.fitness, creature.coord[0]+1, creature.coord[1]+1, creature.exit[0], creature.exit[1], creature.gene, creature.id)
+                    self.Creature_pool.append(cr)
                     creature.coord=(creature.coord[0], creature.coord[1]+1)
+                    self.Move(creature)
+                    self.Move(cr)
                     return
                 else:
-                    self.Creature_pool.append(Creature(creature.fitness, creature.coord[0]-1, creature.coord[1]+1, creature.gene, creature.id))
+                    cr=Creature(creature.fitness, creature.coord[0]-1, creature.coord[1], creature.exit[0], creature.exit[1], creature.gene, creature.id)
+                    self.Creature_pool.append(cr)
                     creature.coord=(creature.coord[0]+1, creature.coord[1])
-                    creature.coord=(creature.coord[0], creature.coord[1]+1)
+                    self.Move(creature)
+                    self.Move(cr)
                     return
         creature.coord=(creature.coord[0], creature.coord[1]+1)#иначе просто опускаем на 1 клетку
+        self.Move(creature)
+        return
 
 ex=Action()
-m=Monitor(900,1400)
-ex.Make_Random_Creatures_Pool()
-#m.Print_Creature(ex.Creature_pool[0][0], m.lFrame)
-m.Print_Creatures(ex.Creature_pool)
-m.window.show()
+#m=Monitor(300,500)
+ex.Make_Random_Creatures_Pool(11,0,10,19)
+#while ex.Creature_pool[0][0].coord[0]!=20 or ex.Creature_pool[0][0].coord[0]!=ex.Creature_pool[0][0].exit[0] and ex.Creature_pool[0][0].coord[1]!=ex.Creature_pool[0][0].exit[1]:
+ex.Move(ex.Creature_pool[0][0])
 
-#m.Print_Creatures_Pool(ex.Creature_pool)
+print('Result = '+str(ex.result[ex.Creature_pool[0][0].id]))
+#m.Print_Creatures(ex.Creature_pool)
+#m.window.show()
+
 #m.Print_Body(ex.Creature_pool[0][0])
-#t=tkinter.Label(m.window, text='ok')
-#t.place(in_=m.window, x=500, y=500)
-m.Print_Result(5,4)
-m.Print_Body(ex.Creature_pool[0][0])
-sys.exit(m.gui.exec_())
+#m.Print_Result(5,4)
+#m.Print_Body(ex.Creature_pool[0][0])
+#sys.exit(m.gui.exec_())

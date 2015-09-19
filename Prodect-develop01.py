@@ -26,15 +26,18 @@ class Trace:#Трассировка движения объекта
     #child - массив, в котором лежат номера дочерних к данному элементов в массиве трассировок существа в Управляющем классе
     #если существо не делится, child пуст; иначе там указываются номера
     def __init__(self):
-        self.d=()
+        self.d=[]
         self.len=0
         self.met=-1
 
-    def AddElem(x,y, child=()):
-        self.d[self.len]=(x,y,child)
+    def Len(self):
+        return self.len
+
+    def addElem(self, x, y, child=()):
+        self.d.append((x,y,child))
         self.len+=1
 
-    def TakeElem():
+    def TakeElem(self):
         self.met+=1
         return self.d[self.met]
 
@@ -244,6 +247,10 @@ class Action:
         self.vert=19#Длина поля
         self.result=dict()#Результаты для существ. Ключ - номер существа, общий для всех копий в пределах шага симуляции.
         self.Creature_pool=[]#массив, в котором лежат массивы, в которых лежат существа
+        self.mas_Trace=[]#массив,в котором лежат массивы трассировок существ
+
+        for i in range(21):
+            self.mas_Trace.append([])
 
     def Check(self):#Дымовой тест создания пула случайных существ
         i=0
@@ -310,78 +317,100 @@ class Action:
         self.Creature_pool.remove(creature)
                 
 
-    def Move(self, creature):#функция шаг
+    def Move(self, creature, nT):#функция шаг
         if not(creature.id in self.result):#если существо ещё не учавствовало в симуляции, инициализируем поле 0. (существа с M могут вызываться несколькими функциями и их результаты суммируются)
-            #self.result.append(creature.id)
             self.result[creature.id]=0
+            self.mas_Trace[creature.id].append(Trace())#создаём объект трассировок
         
         if creature.coord[0]==creature.exit[0] and creature.coord[1]==creature.exit[1]:#условие прибавления очков
+            self.mas_Trace[creature.id][nT].addElem(creature.coord[0], creature.coord[1])#трассируем прохождение клетки
             self.result[creature.id]+=creature.fitness
-            print(str(creature.coord[0])+' '+str(creature.coord[1])+'  '+str(self.result[creature.id]))#####Консольный вывод
             return
-            #self.Del_Creature(creature)
+            
         if creature.coord[0]!=creature.exit[0] and creature.coord[1]==creature.exit[1]:#выбыло
-            print(str(creature.coord[0])+' '+str(creature.coord[1])+'  '+str(self.result[creature.id]))#####Консольный вывод
+            self.mas_Trace[creature.id][nT].addElem(creature.coord[0], creature.coord[1])#трассируем прохождение клетки
             return
-            #self.Del_Creature(creature)
-        print(str(creature.coord[0])+' '+str(creature.coord[1])+'  '+str(self.result[creature.id]))#####Консольный вывод
+
         if creature.coord in creature.gene:#если координате существа соответствует какая-либо буква в геноме, то...
             
             if creature.gene[creature.coord]=='L' and creature.coord[0]!=self.gor:
+                self.mas_Trace[creature.id][nT].addElem(creature.coord[0], creature.coord[1])#трассируем прохождение клетки
                 creature.coord=(creature.coord[0]+1, creature.coord[1])
                 creature.coord=(creature.coord[0], creature.coord[1]+1)
-                self.Move(creature)
+                self.Move(creature,nT)
                 return
 
             if creature.gene[creature.coord]=='R' and creature.coord[0]!=0:
+                self.mas_Trace[creature.id][nT].addElem(creature.coord[0], creature.coord[1])#трассируем прохождение клетки
                 creature.coord=(creature.coord[0]-1, creature.coord[1])
                 creature.coord=(creature.coord[0], creature.coord[1]+1)
-                self.Move(creature)
+                self.Move(creature,nT)
                 return
 
             if creature.gene[creature.coord]=='A':
+                self.mas_Trace[creature.id][nT].addElem(creature.coord[0], creature.coord[1])#трассируем прохождение клетки
                 creature.fitness+=1
                 creature.coord=(creature.coord[0], creature.coord[1]+1)
-                self.Move(creature)
+                self.Move(creature,nT)
                 return
 
             if creature.gene[creature.coord]=='M':
                 if creature.coord[0]==self.gor:
+                    self.mas_Trace[creature.id][nT].addElem(creature.coord[0], creature.coord[1], len(self.mas_Trace[creature.id]))#трассируем прохождение клетки
+                    self.mas_Trace[creature.id].append(Trace())#Добавляем существу ещё один массив трассировок - для дополнительного элемента
                     cr=Creature(creature.fitness, creature.coord[0]-1, creature.coord[1]+1, creature.exit[0], creature.exit[1], creature.gene, creature.id)
-                    self.Creature_pool[creature.id].append(cr)
+                    #self.Creature_pool[creature.id].append(cr)
                     creature.coord=(creature.coord[0], creature.coord[1]+1)
-                    self.Move(creature)
-                    self.Move(cr)
+                    self.Move(creature,nT)
+                    self.Move(cr,len(self.mas_Trace[creature.id])-1)
                     return
+                
                 elif creature.coord[0]==0:
+                    self.mas_Trace[creature.id][nT].addElem(creature.coord[0], creature.coord[1], len(self.mas_Trace[creature.id]))#трассируем прохождение клетки
+                    self.mas_Trace[creature.id].append(Trace())#Добавляем существу ещё один массив трассировок - для дополнительного элемента
                     cr=Creature(creature.fitness, creature.coord[0]+1, creature.coord[1]+1, creature.exit[0], creature.exit[1], creature.gene, creature.id)
-                    self.Creature_pool.append(cr)
-                    creature.coord=(creature.coord[0], creature.coord[1]+1)
-                    self.Move(creature)
-                    self.Move(cr)
+                    #self.Creature_pool.append(cr)
+                    creature.coord=(creature.coord[0], creature.coord[1]-1)
+                    self.Move(creature,nT)
+                    self.Move(cr,len(self.mas_Trace[creature.id])+1)
                     return
+                
                 else:
+                    self.mas_Trace[creature.id][nT].addElem(creature.coord[0], creature.coord[1], len(self.mas_Trace[creature.id]))#трассируем прохождение клетки
+                    self.mas_Trace[creature.id].append(Trace())#Добавляем существу ещё один массив трассировок - для дополнительного элемента
                     cr=Creature(creature.fitness, creature.coord[0]-1, creature.coord[1], creature.exit[0], creature.exit[1], creature.gene, creature.id)
-                    self.Creature_pool.append(cr)
+                    #self.Creature_pool.append(cr)
                     creature.coord=(creature.coord[0]+1, creature.coord[1])
-                    self.Move(creature)
-                    self.Move(cr)
+                    self.Move(creature,nT)
+                    self.Move(cr,len(self.mas_Trace[creature.id])-1)
                     return
+                
+        self.mas_Trace[creature.id][nT].addElem(creature.coord[0], creature.coord[1])#трассируем прохождение клетки
         creature.coord=(creature.coord[0], creature.coord[1]+1)#иначе просто опускаем на 1 клетку
-        self.Move(creature)
+        self.Move(creature, nT)
         return
 
+    def Console_Print_Trace(self):
+        for n in self.mas_Trace:
+            for k in n:
+                for j in range(k.Len()):
+                    print(str(k.TakeElem()))
+
+    def Console_Print_Para_Trace(self):
+        i=0
+        for n in self.mas_Trace:
+            for k in range(20):
+                for p in n:
+                    q=p.TakeElem()
+                    if q[1]==k:
+                        print(str(q))
+                    else:
+                        p.met-=1
+                
+
 ex=Action()
-#m=Monitor(300,500)
 ex.Make_Random_Creatures_Pool(11,0,10,19)
-#while ex.Creature_pool[0][0].coord[0]!=20 or ex.Creature_pool[0][0].coord[0]!=ex.Creature_pool[0][0].exit[0] and ex.Creature_pool[0][0].coord[1]!=ex.Creature_pool[0][0].exit[1]:
-ex.Move(ex.Creature_pool[0][0])
 
+ex.Move(ex.Creature_pool[0][0],0)
+ex.Console_Print_Para_Trace()
 print('Result = '+str(ex.result[ex.Creature_pool[0][0].id]))
-#m.Print_Creatures(ex.Creature_pool)
-#m.window.show()
-
-#m.Print_Body(ex.Creature_pool[0][0])
-#m.Print_Result(5,4)
-#m.Print_Body(ex.Creature_pool[0][0])
-#sys.exit(m.gui.exec_())

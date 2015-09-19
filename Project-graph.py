@@ -25,7 +25,8 @@ class Graph:
         self.app = QApplication(sys.argv)
 
         self.window=QWidget()
-        self.graph=DrawText()
+        self.window.setBackgroundRole(QPalette.Light)
+        self.graph=DrawGraph(mas)
         sc=QScrollArea(self.window)
         sc.setWidget(self.graph)
         self.graph.setToolTip('This is a QWidget widget')
@@ -35,27 +36,62 @@ class Graph:
         self.window.setFixedSize(screen.width()*0.8, screen.height()*0.8)
         sc.setGeometry(0, 0, screen.width()*0.8, screen.height()*0.8)
         
-        if len(mas)*10>screen.width()*0.8-15:
-            self.graph.setGeometry(0, 0, len(mas)*10-15, screen.height()*0.8-20)
+        if len(mas)*10>screen.width()*0.8-20:
+            self.graph.setGeometry(0, 0, len(mas)*10+25, screen.height()*0.8-20)
         else:
             self.graph.setGeometry(0, 0, screen.width()*0.8-15, screen.height()*0.8-20)
+        
+        
 
         
-
         
-        
-class DrawText(QWidget):
-    def __init__(self, parent=None):
+class DrawGraph(QWidget):
+    def __init__(self, mas, parent=None):
         QWidget.__init__(self, parent)
+        self.mas=mas
         
     def paintEvent(self, event):
         painter=QPainter()
-        #painter.setPen(Qt.black)
-        #painter.setBrush(QBrush(Qt.red))
         
         painter.begin(self)
-        painter.drawText(50,50,u'123')
+        self.Print_Graph(painter)
         painter.end()
+
+    def Print_Graph(self, painter):
+        painter.setPen(Qt.black)
+        
+        painter.setBrush(Qt.SolidPattern);
+        painter.setBrush(QBrush(QColor(204,255,255,255)))
+        painter.drawLine(10, 10, 10, self.height()-30)
+        painter.drawLine(self.width()-10, self.height()-30, 10, self.height()-30)
+        #painter.drawText(50,50,u'123')
+
+        
+        
+        n=int((self.width()-25)/(len(self.mas)-1))
+        h=int((self.height()-25)/max(self.mas))
+        
+        polygon=QPolygon(len(self.mas)+2)
+        polygon.setPoint(0, 10, self.height()-30)
+        for k in range(len(self.mas)):
+            polygon.setPoint(k+1, (10+k*n), self.height()-(10+self.mas[k]*h))
+
+        polygon.setPoint(k+2, (10+k*n), self.height()-30)
+        painter.drawPolygon(polygon)
+
+        k=len(self.mas)
+        if k<=40:
+            for i in range(n):
+                painter.drawText(i*n+10, self.height()-15, str(i))
+        elif k<=100:
+            for i in range(int(k/5)):
+                painter.drawText(5*i*n+10, self.height()-15, str(i*5))
+        else:
+            for i in range(int(k/10)):
+                painter.drawText(10*i*n+10, self.height()-15, str(i*10))
+                #print(10*i*n)
+                #print(n)
+                #print(i)
         
 class Monitor:
     def __init__(self, h, w, n1=20, n2=20, bodyItemWidth=30, bodyItemHeight=30):#n1 - кол-во клеток в теле существа в ширину n2  - в длину, bodyItemWidth bodyItemHeight - размеры клеток
@@ -379,7 +415,7 @@ class Action:
 #m.Print_Body(ex.Creature_pool[0][0])
 #m.Print_Result(5,4)
 #m.Print_Body(ex.Creature_pool[0][0])
-g=Graph([1,2])
+g=Graph([4,4,3,5,5,4,4,3,3,5,4,3,5,5,4,4,3,3,5,6,6,4,3,5,5,4,4,3,3,5,6,4,3,5,5,4,4,3,3,5,6,4,3,5,5,4,4,3,3,5,6,4,3,5,5,4,4,3,3,5,4,3,5,5,4,4,3,3,5,6,6,4,3,5,5,4,4,3,3,5,6])
 g.window.show()
 sys.exit(g.app.exec_())
 #sys.exit(g.gui.exec_())

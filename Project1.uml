@@ -130,8 +130,8 @@
 <XPD:REF name="Head">ytBBrPRO4kW8y4Bb2aNHBQAA</XPD:REF>
 <XPD:REF name="Tail">nxN/dy+EE0erj0rnM4gYXAAA</XPD:REF>
 <XPD:OBJ name="NameLabel" type="EdgeLabelView" guid="AhZllFjyhEK49sbmR74OPgAA">
-<XPD:ATTR name="Alpha" type="real">1,5707963267949</XPD:ATTR>
-<XPD:ATTR name="Distance" type="real">15</XPD:ATTR>
+<XPD:ATTR name="Alpha" type="real">-2,80924442629419</XPD:ATTR>
+<XPD:ATTR name="Distance" type="real">55,2268050859363</XPD:ATTR>
 <XPD:ATTR name="Text" type="string">&#1042;&#1074;&#1086;&#1076;&#1080;&#1090; &#1076;&#1072;&#1085;&#1085;&#1099;&#1077; &#1074; &#1090;&#1072;&#1073;&#1083;&#1080;&#1094;&#1091;</XPD:ATTR>
 <XPD:REF name="Model">0lAICDnCP0OLrOHRPJlR0wAA</XPD:REF>
 </XPD:OBJ>
@@ -333,8 +333,8 @@
 <XPD:REF name="Head">XGzid2i8lkict7rMY5E32QAA</XPD:REF>
 <XPD:REF name="Tail">nxN/dy+EE0erj0rnM4gYXAAA</XPD:REF>
 <XPD:OBJ name="NameLabel" type="EdgeLabelView" guid="aG7npsc+C0OlvFRy8q2kqQAA">
-<XPD:ATTR name="Alpha" type="real">1,5707963267949</XPD:ATTR>
-<XPD:ATTR name="Distance" type="real">15</XPD:ATTR>
+<XPD:ATTR name="Alpha" type="real">-3,40559723993079</XPD:ATTR>
+<XPD:ATTR name="Distance" type="real">62,1288982680363</XPD:ATTR>
 <XPD:ATTR name="Text" type="string">&#1053;&#1072;&#1078;&#1080;&#1084;&#1072;&#1077;&#1090; &quot;Play&quot;</XPD:ATTR>
 <XPD:REF name="Model">CSkA5/8lvEmgeGWZFUzNAwAA</XPD:REF>
 </XPD:OBJ>
@@ -450,8 +450,8 @@
 <XPD:REF name="Head">BkOUfHqlqUuTZuW05GCJVgAA</XPD:REF>
 <XPD:REF name="Tail">nxN/dy+EE0erj0rnM4gYXAAA</XPD:REF>
 <XPD:OBJ name="NameLabel" type="EdgeLabelView" guid="7dAeTnyPB0q7bq8mMApxmgAA">
-<XPD:ATTR name="Alpha" type="real">1,5707963267949</XPD:ATTR>
-<XPD:ATTR name="Distance" type="real">15</XPD:ATTR>
+<XPD:ATTR name="Alpha" type="real">-3,10037832401667</XPD:ATTR>
+<XPD:ATTR name="Distance" type="real">76,0263112349928</XPD:ATTR>
 <XPD:ATTR name="Text" type="string">&#1053;&#1072;&#1078;&#1080;&#1084;&#1072;&#1077;&#1090; &quot;Stop&quot;</XPD:ATTR>
 <XPD:REF name="Model">+S9ONshMvU+5b+iT0YB3CgAA</XPD:REF>
 </XPD:OBJ>
@@ -600,8 +600,8 @@
 <XPD:REF name="Head">1LlucddDZEi0TNpVyBoN2QAA</XPD:REF>
 <XPD:REF name="Tail">nxN/dy+EE0erj0rnM4gYXAAA</XPD:REF>
 <XPD:OBJ name="NameLabel" type="EdgeLabelView" guid="NTqkm+jltkqzvpKCH/B7DAAA">
-<XPD:ATTR name="Alpha" type="real">1,5707963267949</XPD:ATTR>
-<XPD:ATTR name="Distance" type="real">15</XPD:ATTR>
+<XPD:ATTR name="Alpha" type="real">-2,9892435308284</XPD:ATTR>
+<XPD:ATTR name="Distance" type="real">114,908659377786</XPD:ATTR>
 <XPD:ATTR name="Text" type="string">&#1053;&#1072;&#1078;&#1080;&#1084;&#1072;&#1077;&#1090; &#1082;&#1085;&#1086;&#1087;&#1082;&#1091; &quot;Graph&quot;</XPD:ATTR>
 <XPD:REF name="Model">+Vonxud2FkmLCqJkid8hQgAA</XPD:REF>
 </XPD:OBJ>
@@ -770,8 +770,8 @@
 <XPD:REF name="Head">l/kjWhw7hka4ej6HLSvcfAAA</XPD:REF>
 <XPD:REF name="Tail">nxN/dy+EE0erj0rnM4gYXAAA</XPD:REF>
 <XPD:OBJ name="NameLabel" type="EdgeLabelView" guid="z0TFeOZBMkGyWp37O3n87wAA">
-<XPD:ATTR name="Alpha" type="real">1,5707963267949</XPD:ATTR>
-<XPD:ATTR name="Distance" type="real">15</XPD:ATTR>
+<XPD:ATTR name="Alpha" type="real">-2,33778026337116</XPD:ATTR>
+<XPD:ATTR name="Distance" type="real">33,734255586866</XPD:ATTR>
 <XPD:ATTR name="Text" type="string">&#1053;&#1072;&#1078;&#1080;&#1084;&#1072;&#1077;&#1090; &#1085;&#1072; &quot;Close&quot; &#1080;&#1083;&#1080; &#1079;&#1072;&#1082;&#1088;&#1099;&#1074;&#1072;&#1077;&#1090; &#1086;&#1082;&#1085;&#1086; &#1083;&#1102;&#1073;&#1099;&#1084; &#1076;&#1088;&#1091;&#1075;&#1080;&#1084; &#1089;&#1087;&#1086;&#1089;&#1086;&#1073;&#1086;&#1084;</XPD:ATTR>
 <XPD:REF name="Model">Njc7cbIxvUiTEVVc529JdAAA</XPD:REF>
 </XPD:OBJ>
@@ -906,8 +906,8 @@
 <XPD:REF name="Head">bJ360maS90ejmDvd585V6gAA</XPD:REF>
 <XPD:REF name="Tail">nxN/dy+EE0erj0rnM4gYXAAA</XPD:REF>
 <XPD:OBJ name="NameLabel" type="EdgeLabelView" guid="ME3anPnNp0OPo7hZPQXsJQAA">
-<XPD:ATTR name="Alpha" type="real">1,5707963267949</XPD:ATTR>
-<XPD:ATTR name="Distance" type="real">15</XPD:ATTR>
+<XPD:ATTR name="Alpha" type="real">-3,55291178636071</XPD:ATTR>
+<XPD:ATTR name="Distance" type="real">72,3394774656273</XPD:ATTR>
 <XPD:ATTR name="Text" type="string">&#1047;&#1072;&#1087;&#1091;&#1089;&#1082; &#1087;&#1088;&#1086;&#1075;&#1088;&#1072;&#1084;&#1084;&#1099;</XPD:ATTR>
 <XPD:REF name="Model">V/EOBMIe6UK2bOCzVFW2qAAA</XPD:REF>
 </XPD:OBJ>
